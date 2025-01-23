@@ -1,0 +1,6 @@
+@JitAPI_HostAddress = http://localhost:5073
+
+GET {{JitAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
