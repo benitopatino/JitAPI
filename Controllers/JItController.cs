@@ -60,7 +60,12 @@ namespace JitAPI.Controllers
                 var jit = _mapper.Map<Jit>(dto);
                 _unitOfWork.JitRepository.Add(jit);
                 _unitOfWork.Complete();
-                return CreatedAtAction(nameof(Get), new { id = jit.Id }, jit);
+                // Fetch the newly created Jit with User relationship
+                var createdJit = _unitOfWork.JitRepository.GetAll()
+                    .Include(j => j.User)
+                    .FirstOrDefault(j => j.Id == jit.Id);
+
+                return CreatedAtAction(nameof(Get), new { id = createdJit.Id }, _mapper.Map<JitGetDTO>(createdJit));
             }
             catch (Exception ex)
             {
