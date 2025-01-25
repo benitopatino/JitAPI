@@ -10,7 +10,11 @@ namespace JitAPI.Models.AutoMapper
             CreateMap<Jit, JitPostDTO>().ReverseMap();
             CreateMap<Jit, JitGetDTO>().ReverseMap();
             CreateMap<Jit, JitPutDTO>().ReverseMap();
+
+
+            CreateMap<User, UserPostDTO>().ReverseMap();
             CreateMap<User, UserGetDTO>().ReverseMap();
+            CreateMap<User, UserPutDTO>().ReverseMap();
         }
     }
 }

@@ -13,6 +13,8 @@ namespace JitAPI.Models
         public string Content { get; set; }
 
         [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+
         public DateTime DateCreated { get; set; }
 
         [Required]
