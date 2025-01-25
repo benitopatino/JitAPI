@@ -6,6 +6,7 @@ namespace JitAPI.Models
     public class User
     {
         [Key]
+
         public Guid UserId { get; set; }
 
         [Required]

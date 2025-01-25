@@ -1,0 +1,13 @@
+﻿USERS
+
+// TODO: Create CRUD controller for USERS
+// TODO: Create DTO ?? 
+
+
+
+JIT
+
+        
+        // TODO: Generate DateCreated on insert in Database
+        // TODO: Create DTO to exclude User object
+        // TODO: Create DTO for JIT
