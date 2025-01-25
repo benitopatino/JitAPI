@@ -7,7 +7,4 @@
 
 JIT
 
-        
-        // TODO: Generate DateCreated on insert in Database
-        // TODO: Create DTO to exclude User object
-        // TODO: Create DTO for JIT
+        // TODO: ignore DateCreated in Repository (add)

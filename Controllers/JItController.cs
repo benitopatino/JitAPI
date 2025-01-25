@@ -1,7 +1,10 @@
-﻿using JitAPI.Models.Interface;
-using JitAPI.Models;
+﻿using AutoMapper;
+using JitAPI.Models.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using JitAPI.Models;
+using JitAPI.Models.DTOS;
+using Microsoft.EntityFrameworkCore;
 
 namespace JitAPI.Controllers
 {
@@ -10,10 +13,11 @@ namespace JitAPI.Controllers
     public class JitController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public JitController(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public JitController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -21,7 +25,9 @@ namespace JitAPI.Controllers
         {
             try
             {
-                return Ok(_unitOfWork.JitRepository.GetAll().ToList());
+                var jits = _unitOfWork.JitRepository.GetAll()
+                    .Include(j => j.User);
+                return Ok(_mapper.Map<IEnumerable<JitGetDTO>>(jits));
             }
             catch (Exception ex)
             {
@@ -34,9 +40,11 @@ namespace JitAPI.Controllers
         {
             try
             {
-                var jit = _unitOfWork.JitRepository.Get(id);
+                var jit = _unitOfWork.JitRepository.GetAll()
+                    .Include(j => j.User)
+                    .FirstOrDefault(j => j.Id == id);
                 if (jit == null) return NotFound();
-                return Ok(jit);
+                return Ok(_mapper.Map<JitGetDTO>(jit));
             }
             catch (Exception ex)
             {
@@ -45,10 +53,11 @@ namespace JitAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Jit jit)
+        public IActionResult Create([FromBody] JitPostDTO dto)
         {
             try
             {
+                var jit = _mapper.Map<Jit>(dto);
                 _unitOfWork.JitRepository.Add(jit);
                 _unitOfWork.Complete();
                 return CreatedAtAction(nameof(Get), new { id = jit.Id }, jit);
@@ -59,16 +68,14 @@ namespace JitAPI.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] Jit updatedJit)
+        [HttpPut]
+        public IActionResult Update([FromBody] JitPutDTO dto)
         {
             try
             {
-                var jit = _unitOfWork.JitRepository.Get(id);
+                var jit = _unitOfWork.JitRepository.Get(dto.Id);
                 if (jit == null) return NotFound();
-                jit.Content = updatedJit.Content;
-                jit.DateCreated = updatedJit.DateCreated;
-                jit.UserId = updatedJit.UserId;
+                _mapper.Map(dto, jit);
                 _unitOfWork.Complete();
                 return NoContent();
             }
