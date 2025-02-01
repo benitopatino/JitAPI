@@ -10,11 +10,11 @@ namespace JitAPI.Models
         {
         }
 
-        public IEnumerable<Jit> GetJitsByUserId(Guid userId)
+        public IQueryable<Jit> GetJitsByUserId(Guid userId)
         {
             var allJits = GetAll()
-                .Where(j => j.UserId.Equals(userId))
-                .ToList();
+                .Where(j => j.UserId.Equals(userId));
+                
 
             return allJits;
         }
