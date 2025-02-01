@@ -1,8 +1,5 @@
 ﻿USERS
 
-// TODO: Create CRUD controller for USERS
-// TODO: Create DTO ?? 
-
 
 
 JIT
