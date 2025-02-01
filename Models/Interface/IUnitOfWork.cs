@@ -3,7 +3,7 @@
 
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<Jit> JitRepository { get; }
+        IJitRepository JitRepository { get; }
         IRepository<User> UserRepository { get; }
         int Complete();
     }
