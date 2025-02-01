@@ -2,6 +2,6 @@
 {
     public interface IJitRepository : IRepository<Jit>
     {
-        IEnumerable<Jit>GetJitsByUserId(Guid userId);
+        IQueryable<Jit>GetJitsByUserId(Guid userId);
     }
 }
