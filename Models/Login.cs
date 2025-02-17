@@ -11,5 +11,11 @@ namespace JitAPI.Models
         public string PasswordHash { get; set; }
         public DateTime LastLogin { get; set; }
 
+        [Required]
+        [ForeignKey("UserId")]
+        public Guid UserId { get; set; }
+
+        public User User { get; set; }
+
     }
 }

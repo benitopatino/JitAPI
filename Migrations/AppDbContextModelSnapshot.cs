@@ -42,7 +42,7 @@ namespace JitAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Jits");
+                    b.ToTable("Jits", (string)null);
                 });
 
             modelBuilder.Entity("JitAPI.Models.User", b =>
@@ -65,7 +65,7 @@ namespace JitAPI.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("JitAPI.Models.Jit", b =>

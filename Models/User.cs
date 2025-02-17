@@ -23,10 +23,6 @@ namespace JitAPI.Models
 
         // Foreign 
 
-        [Required]
-        public Guid LoginId { get; set; }
-
-        [ForeignKey("Login")]
         public Login Login { get; set; }
 
     }
