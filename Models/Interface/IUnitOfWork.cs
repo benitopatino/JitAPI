@@ -5,6 +5,7 @@
     {
         IJitRepository JitRepository { get; }
         IRepository<User> UserRepository { get; }
+        IRepository<Login> LoginRepository { get; }
         int Complete();
     }
 }
