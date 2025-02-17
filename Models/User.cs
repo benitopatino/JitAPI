@@ -20,6 +20,15 @@ namespace JitAPI.Models
         [Required]
         [Column(TypeName = "varchar(500)")]
         public string Email { get; set; }
+
+        // Foreign 
+
+        [Required]
+        public Guid LoginId { get; set; }
+
+        [ForeignKey("Login")]
+        public Login Login { get; set; }
+
     }
 
 }
