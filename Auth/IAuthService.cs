@@ -1,16 +1,59 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 using JitAPI.Models;
 using JitAPI.Models.Interface;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JitAPI.Auth
 {
+    
     public interface IAuthService
     {
         public bool Register(User user, string password);
-        public bool Authenticate(string username, string password);
+        public AuthResult Authenticate(string username, string password);
+    }
+
+    public class AuthResult
+    {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+
+        public string Token { get; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+
+        public DateTime? Expiration { get; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+
+        public DateTime? IssuedAt { get; }
+        public bool IsAuthenticated { get; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string Error { get; }
+
+
+        private AuthResult(string token, bool isAuthenticated, DateTime? expiration, DateTime? issuedAt, string? error)
+        {
+            Token = token;
+            IsAuthenticated = isAuthenticated;
+            Expiration = expiration;
+            IssuedAt = issuedAt;
+            Error = error;
+        }
+
+        public static AuthResult Success(JwtTokenResult tokenResult) =>
+            new AuthResult(tokenResult.Token, true, tokenResult.Expiration, tokenResult.IssuedAt, null);
+
+        public static AuthResult Failure() =>
+            new AuthResult(null, false, null, null, "Invalid credentials");
+    }
+
+
+    public class JwtTokenResult
+    {
+        public string Token { get; set; } = string.Empty;
+        public DateTime Expiration { get; set; }
+        public DateTime IssuedAt { get; set; }
     }
 
 
@@ -56,14 +99,29 @@ namespace JitAPI.Auth
 
         }
 
-        public bool Authenticate(string email, string password)
+        public AuthResult Authenticate(string email, string password)
         {
-            throw new NotImplementedException();
+
+            var user = _unitOfWork.UserRepository.GetAll()
+                .FirstOrDefault(u => u.Email == email);
+
+            if (user == null)
+                return AuthResult.Failure();
+
+            var login = _unitOfWork.LoginRepository.GetAll()
+                .FirstOrDefault(l => l.UserId == user.UserId);
+
+            if(login == null || !BCrypt.Net.BCrypt.Verify(password, login.PasswordHash))
+                return AuthResult.Failure();
+
+
+            return AuthResult.Success(GenerateJwtToken(user));
+
         }
 
-
-        private string GenerateJwtToken(User user)
+        private JwtTokenResult GenerateJwtToken(User user)
         {
+            var EXPIRATION_TIME = DateTime.UtcNow.AddHours(1);
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
@@ -78,11 +136,18 @@ namespace JitAPI.Auth
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: EXPIRATION_TIME,
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new JwtTokenResult()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiration = EXPIRATION_TIME,
+                IssuedAt = DateTime.UtcNow
+            };
+
         }
     }
 

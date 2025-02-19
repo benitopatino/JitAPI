@@ -3,6 +3,7 @@ using JitAPI.Auth;
 using JitAPI.Models;
 using JitAPI.Models.DTOS;
 using JitAPI.Models.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,12 +30,6 @@ namespace JitAPI.Controllers
             try
             {
                 var users = _unitOfWork.UserRepository.GetAll();
-
-                _authService.Register(new User(){ Email = "test@test.com", FirstName = "Alex", LastName = "Moik" },
-                    "RandoPassword$123");
-
-
-
 
                 return Ok(_mapper.Map<IEnumerable<UserGetDTO>>(users));
             }
