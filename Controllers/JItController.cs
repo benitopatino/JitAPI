@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using JitAPI.Models;
 using JitAPI.Models.DTOS;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace JitAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class JitController : ControllerBase
     {
@@ -54,8 +56,7 @@ namespace JitAPI.Controllers
 
 
         [HttpGet("user/{userId}")]
-
-        public IActionResult GetByJitsUserId(Guid userId)
+        public IActionResult GetJitsByUserId(Guid userId)
         {
             try
             {
@@ -109,6 +110,7 @@ namespace JitAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
 
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)

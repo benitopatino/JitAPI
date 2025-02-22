@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using JitAPI.Auth;
 using JitAPI.Models;
 using JitAPI.Models.DTOS;
 using JitAPI.Models.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,15 +11,18 @@ using Microsoft.EntityFrameworkCore;
 namespace JitAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class UserController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public UserController(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IAuthService _authService;
+        public UserController(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -26,6 +31,7 @@ namespace JitAPI.Controllers
             try
             {
                 var users = _unitOfWork.UserRepository.GetAll();
+
                 return Ok(_mapper.Map<IEnumerable<UserGetDTO>>(users));
             }
             catch (Exception ex)
