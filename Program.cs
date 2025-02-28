@@ -1,4 +1,5 @@
 
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using JitAPI.Auth;
 using JitAPI.Models;
@@ -24,6 +25,9 @@ namespace JitAPI
 
 
             // add jwt
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -38,6 +42,9 @@ namespace JitAPI
                         IssuerSigningKey =
                             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                     };
+                    
+                    options.MapInboundClaims = false; // Important!
+
                 });
 
 
@@ -69,6 +76,7 @@ namespace JitAPI
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
