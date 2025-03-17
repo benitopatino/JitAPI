@@ -25,8 +25,7 @@ namespace JitAPI.Models.Relationships
 
         // Followee
 
-        [Required]
-        public Guid FolloweeId { get; set; }
+        public Guid? FolloweeId { get; set; }
 
         [ForeignKey("FolloweeId")]
         public User Followee { get; set; }
