@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using JitAPI.Models.Relationships;
 
 namespace JitAPI.Models
 {
@@ -9,6 +10,8 @@ namespace JitAPI.Models
         public DbSet<User> Users { get; set; }
 
         public DbSet<Login> Logins { get; set; }
+
+        public DbSet<Relationship> Relationships { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     }
