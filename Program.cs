@@ -25,8 +25,9 @@ namespace JitAPI
 
 
             // add jwt
-            // Disable default claim mappings to avoid unwanted behavior
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // Disable default claim mappings
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -41,6 +42,9 @@ namespace JitAPI
                         IssuerSigningKey =
                             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                     };
+                    
+                    options.MapInboundClaims = false; // Important!
+
                 });
 
 
