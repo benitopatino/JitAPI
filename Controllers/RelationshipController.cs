@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using JitAPI.Models.Interface;
+using JitAPI.Models.Relationships;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,20 @@ namespace JitAPI.Controllers
         }
 
         [HttpPost("follow/{followeeId:guid}")]
-        public IActionResult Follow(string followeeId)
+        public IActionResult Follow(Guid followeeId)
         {
             // extract the claims User ID 
             var userID = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
-            return StatusCode(200);
+            if (string.IsNullOrWhiteSpace(userID))
+                return BadRequest();
+
+            Relationship newRelationship = new Relationship();
+            newRelationship.FollowerId = Guid.Parse(userID);
+            newRelationship.FolloweeId = followeeId;
+            _unitOfWork.Relationships.Add(newRelationship);
+            _unitOfWork.Complete();
+            return CreatedAtAction(nameof(Follow), new { id = newRelationship.Id }, newRelationship);
         }
 
 
