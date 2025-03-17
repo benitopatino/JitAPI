@@ -1,4 +1,5 @@
 
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using JitAPI.Auth;
 using JitAPI.Models;
@@ -24,6 +25,8 @@ namespace JitAPI
 
 
             // add jwt
+            // Disable default claim mappings to avoid unwanted behavior
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // Disable default claim mappings
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -41,6 +44,7 @@ namespace JitAPI
                 });
 
 
+            builder.Services.AddAuthorization();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -69,6 +73,7 @@ namespace JitAPI
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
