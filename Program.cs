@@ -16,7 +16,7 @@ namespace JitAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Follow services to the container.
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("JitDb")));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -46,7 +46,6 @@ namespace JitAPI
                     options.MapInboundClaims = false; // Important!
 
                 });
-
 
             builder.Services.AddAuthorization();
             builder.Services.AddControllers();

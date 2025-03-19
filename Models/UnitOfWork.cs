@@ -11,7 +11,7 @@ namespace JitAPI.Models
         public IRepository<User> UserRepository { get; }
         public IRepository<Login> LoginRepository { get; }
         
-        public IRepository<UserFollow> UserFollows { get; }
+        public IRepository<UserFollow> UserFollowRepository { get; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -19,7 +19,7 @@ namespace JitAPI.Models
             JitRepository = new JitRepository(_context);
             UserRepository = new Repository<User>(_context);
             LoginRepository = new Repository<Login>(_context);
-            UserFollows = new Repository<UserFollow>(_context);
+            UserFollowRepository = new Repository<UserFollow>(_context);
         }
 
         public int Complete() => _context.SaveChanges();
