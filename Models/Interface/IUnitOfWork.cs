@@ -1,4 +1,5 @@
-﻿using JitAPI.Models.Relationships;
+﻿using JitAPI.Models.Follows;
+using JitAPI.Models.Follows;
 
 namespace JitAPI.Models.Interface
 {
@@ -8,7 +9,7 @@ namespace JitAPI.Models.Interface
         IJitRepository JitRepository { get; }
         IRepository<User> UserRepository { get; }       
         IRepository<Login> LoginRepository { get; }
-        IRepository<Relationship> Relationships { get; }
+        IRepository<UserFollow> UserFollows { get; }
         int Complete();
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace JitAPI.Models.Relationships
+namespace JitAPI.Models.Follows
 {
-    public class Relationship
+    public class UserFollow
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,16 +18,16 @@ namespace JitAPI.Models.Relationships
         // Follower
 
         [Required]
-        public Guid FollowerId { get; set; }
+        public Guid UserFollowerId { get; set; }
 
-        [ForeignKey("FollowerId")]
-        public User Follower { get; set; }
+        [ForeignKey("UserFollowerId")]
+        public User UserFollower { get; set; }
 
         // Followee
 
-        public Guid? FolloweeId { get; set; }
+        public Guid? UserFolloweeId { get; set; }
 
-        [ForeignKey("FolloweeId")]
-        public User Followee { get; set; }
+        [ForeignKey("UserFolloweeId")]
+        public User UserFollowee { get; set; }
     }
 }

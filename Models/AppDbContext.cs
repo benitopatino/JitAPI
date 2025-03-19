@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using JitAPI.Models.Relationships;
+using JitAPI.Models.Follows;
 
 namespace JitAPI.Models
 {
@@ -11,7 +11,7 @@ namespace JitAPI.Models
 
         public DbSet<Login> Logins { get; set; }
 
-        public DbSet<Relationship> Relationships { get; set; }
+        public DbSet<UserFollow> UserFollows { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     }
