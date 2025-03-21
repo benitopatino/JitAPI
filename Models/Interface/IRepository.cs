@@ -6,5 +6,6 @@
         IQueryable<T> GetAll();
         void Add(T entity);
         void Remove(T entity);
+        bool Exists(Guid id);
     }
 }
