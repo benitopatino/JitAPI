@@ -11,5 +11,6 @@ namespace JitAPI.Models
         public IQueryable<T> GetAll() => _context.Set<T>();
         public void Add(T entity) => _context.Set<T>().Add(entity);
         public void Remove(T entity) => _context.Set<T>().Remove(entity);
+        public bool Exists(Guid id) => _context.Set<T>().Find(id) != null;
     }
 }

@@ -4,6 +4,7 @@ using JitAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JitAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250317070715_AddRelationships")]
+    partial class AddRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,33 +24,6 @@ namespace JitAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("JitAPI.Models.Follows.UserFollow", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("DateOfFollow")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UserFolloweeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserFollowerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserFolloweeId");
-
-                    b.HasIndex("UserFollowerId");
-
-                    b.ToTable("UserFollows");
-                });
 
             modelBuilder.Entity("JitAPI.Models.Jit", b =>
                 {
@@ -97,6 +73,33 @@ namespace JitAPI.Migrations
                     b.ToTable("Logins");
                 });
 
+            modelBuilder.Entity("JitAPI.Models.Relationships.Relationship", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("DateOfFollow")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("FolloweeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FollowerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FolloweeId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.ToTable("Relationships");
+                });
+
             modelBuilder.Entity("JitAPI.Models.User", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -120,23 +123,6 @@ namespace JitAPI.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("JitAPI.Models.Follows.UserFollow", b =>
-                {
-                    b.HasOne("JitAPI.Models.User", "UserFollowee")
-                        .WithMany()
-                        .HasForeignKey("UserFolloweeId");
-
-                    b.HasOne("JitAPI.Models.User", "UserFollower")
-                        .WithMany()
-                        .HasForeignKey("UserFollowerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserFollowee");
-
-                    b.Navigation("UserFollower");
-                });
-
             modelBuilder.Entity("JitAPI.Models.Jit", b =>
                 {
                     b.HasOne("JitAPI.Models.User", "User")
@@ -157,6 +143,23 @@ namespace JitAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("JitAPI.Models.Relationships.Relationship", b =>
+                {
+                    b.HasOne("JitAPI.Models.User", "Followee")
+                        .WithMany()
+                        .HasForeignKey("FolloweeId");
+
+                    b.HasOne("JitAPI.Models.User", "Follower")
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Followee");
+
+                    b.Navigation("Follower");
                 });
 
             modelBuilder.Entity("JitAPI.Models.User", b =>

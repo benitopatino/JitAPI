@@ -1,4 +1,5 @@
 ﻿
+using JitAPI.Models.Follows;
 using JitAPI.Models.Interface;
 
 namespace JitAPI.Models
@@ -9,6 +10,8 @@ namespace JitAPI.Models
         public IJitRepository JitRepository { get; }
         public IRepository<User> UserRepository { get; }
         public IRepository<Login> LoginRepository { get; }
+        
+        public IRepository<UserFollow> UserFollowRepository { get; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -16,6 +19,7 @@ namespace JitAPI.Models
             JitRepository = new JitRepository(_context);
             UserRepository = new Repository<User>(_context);
             LoginRepository = new Repository<Login>(_context);
+            UserFollowRepository = new Repository<UserFollow>(_context);
         }
 
         public int Complete() => _context.SaveChanges();
