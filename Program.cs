@@ -21,6 +21,7 @@ namespace JitAPI
                 options.UseSqlServer(builder.Configuration.GetConnectionString("JitDb")));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<INewsfeedService, NewsfeedService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
 
