@@ -7,9 +7,9 @@ public class NewsfeedItemDTO(
     Guid authorUserId,
     string authorFullName)
 {
-    public Guid JitId { get; set; } = jitId;
-    public string JitContent { get; set; } = jitContent;
-    public DateTime JitDateCreated { get; set; } = jitDateCreated;
+    public Guid Id { get; set; } = jitId;
+    public string Content { get; set; } = jitContent;
+    public DateTime DateCreated { get; set; } = jitDateCreated;
     public Guid AuthorUserId { get; set; } = authorUserId;
     public string AuthorFullName { get; set; } = authorFullName;
 }
