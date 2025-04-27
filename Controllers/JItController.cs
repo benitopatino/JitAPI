@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using JitAPI.Auth;
 using JitAPI.Models.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +80,14 @@ namespace JitAPI.Controllers
             try
             {
                 var jit = _mapper.Map<Jit>(dto);
+                
+                // Extract UserId from jwt token
+                
+                string? userId = HttpContext.GetUserId();
+                if (!Guid.TryParse(userId, out Guid outUserId))
+                    throw new ArgumentNullException(nameof(outUserId), "Unable to extract UserId from token");
+                
+                jit.UserId = outUserId;
                 _unitOfWork.JitRepository.Add(jit);
                 _unitOfWork.Complete();
                 // Fetch the newly created Jit with User relationship
