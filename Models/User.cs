@@ -31,7 +31,11 @@ namespace JitAPI.Models
         [Required]
         [Column(TypeName = "varchar(500)")]
         public string Email { get; set; }
-
+        
+        [Required]
+        [Column(TypeName = "varchar(250)")]
+        public string Username { get; set; }
+        
         // Foreign 
 
         public Login Login { get; set; }
