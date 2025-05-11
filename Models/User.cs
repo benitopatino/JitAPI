@@ -14,6 +14,7 @@ namespace JitAPI.Models
             FirstName = newUser.FirstName;
             LastName = newUser.LastName;
             Email = newUser.Email;
+            Username = newUser.Username;
         }
 
         [Key]
