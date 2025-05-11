@@ -26,6 +26,7 @@ namespace JitAPI.Controllers
             user.Email = register.Email;
             user.FirstName = register.FirstName;
             user.LastName = register.LastName;
+            user.Username = register.Username;
 
             bool created = _authService.Register(user, register.Password);
             if (created)
