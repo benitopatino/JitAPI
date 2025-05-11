@@ -4,6 +4,7 @@ using System.Text;
 using JitAPI.Auth;
 using JitAPI.Models;
 using JitAPI.Models.Interface;
+using JitAPI.Models.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,7 @@ namespace JitAPI
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<INewsfeedService, NewsfeedService>();
+            builder.Services.AddScoped<IUserProfileService, UserProfileService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
 
