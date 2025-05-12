@@ -23,7 +23,7 @@ public class UserProfileService : IUserProfileService
         if(userInfo == null)
             throw new KeyNotFoundException("User not found");
         
-        var newsfeedItems = _newsfeedService.GetNewsfeed(userInfo.UserId);
+        var newsfeedItems = _newsfeedService.GetNewsfeed(userInfo.UserId, true);
        
         return new UserProfileDTO()
         {

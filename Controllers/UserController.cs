@@ -27,14 +27,14 @@ namespace JitAPI.Controllers
             _userProfileService = userProfileService;
         }
 
-        [HttpGet]
+        [HttpGet("user/profile/{username}")]
         public IActionResult GetUserProfile(string username)
         {
             var profile = _userProfileService.GetUserProfile(username);
             return Ok(profile);
         }
 
-        [HttpGet("user/profile/{username}")]
+        [HttpGet]
         public IActionResult GetAll()
         {
             try

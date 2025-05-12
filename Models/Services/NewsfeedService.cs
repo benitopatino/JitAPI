@@ -12,33 +12,42 @@ public class NewsfeedService : INewsfeedService
     {
         _unitOfWork = unitOfWork;
     }
-    public IEnumerable<NewsfeedItemDTO> GetNewsfeed(Guid userId)
+    public IEnumerable<NewsfeedItemDTO> GetNewsfeed(Guid userId, bool isProfile)
     {
         List<NewsfeedItemDTO> newsfeedItems = new List<NewsfeedItemDTO>();
         
         // validate user exists
         if (!_unitOfWork.UserRepository.Exists(userId))
             throw new ArgumentException($"User with user id {userId.ToString()}does not exist. ", nameof(userId));
-        
-        
-        // Get follows
-        
-        var followeeIds = _unitOfWork.UserFollowRepository.GetAll()
-            .Where(f => f.UserFollowerId == userId && f.UserFolloweeId != null)
-            .Select(f => f.UserFolloweeId.Value)
-            .ToList();
 
-        List<Jit> followeeJits = new List<Jit>();
-        foreach (var id in followeeIds)
+
+        if (isProfile) // Get own profile newsfeed
         {
-            var userJits = _unitOfWork.JitRepository.GetJitsByUserId(id)
+            var userJits = _unitOfWork.JitRepository.GetJitsByUserId(userId)
                 .Include(j => j.User)
                 .ToList();
+            
             newsfeedItems.AddRange(BuildNewsfeed(userJits));
         }
+        else // Get newsfeed items of followees
+        {
+            // Get follows
+        
+            var followeeIds = _unitOfWork.UserFollowRepository.GetAll()
+                .Where(f => f.UserFollowerId == userId && f.UserFolloweeId != null)
+                .Select(f => f.UserFolloweeId.Value)
+                .ToList();
 
+            List<Jit> followeeJits = new List<Jit>();
+            foreach (var id in followeeIds)
+            {
+                var userJits = _unitOfWork.JitRepository.GetJitsByUserId(id)
+                    .Include(j => j.User)
+                    .ToList();
+                newsfeedItems.AddRange(BuildNewsfeed(userJits));
+            }
+        }
         return newsfeedItems;
-
     }
 
     private IEnumerable<NewsfeedItemDTO> BuildNewsfeed(List<Jit> jits)
