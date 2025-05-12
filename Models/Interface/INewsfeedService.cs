@@ -9,5 +9,5 @@ public interface INewsfeedService
     /// </summary>
     /// <param name="userId">The ID of the user whose newsfeed will be returned.</param>
     /// <returns></returns>
-    IEnumerable<NewsfeedItemDTO> GetNewsfeed(Guid userId);
+    IEnumerable<NewsfeedItemDTO> GetNewsfeed(Guid userId, bool isProfile = false);
 }

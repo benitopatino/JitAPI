@@ -18,11 +18,20 @@ namespace JitAPI.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
-        public UserController(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService)
+        private readonly IUserProfileService _userProfileService;
+        public UserController(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService, IUserProfileService userProfileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _authService = authService;
+            _userProfileService = userProfileService;
+        }
+
+        [HttpGet("user/profile/{username}")]
+        public IActionResult GetUserProfile(string username)
+        {
+            var profile = _userProfileService.GetUserProfile(username);
+            return Ok(profile);
         }
 
         [HttpGet]
