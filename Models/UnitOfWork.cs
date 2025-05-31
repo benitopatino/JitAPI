@@ -9,7 +9,7 @@ namespace JitAPI.Models
         private readonly AppDbContext _context;
         public IJitRepository JitRepository { get; }
         public IRepository<User> UserRepository { get; }
-        public IRepository<UserProfile> UserProfileRepository { get; set; }
+        public IRepository<UserProfile> UserProfileRepository { get;}
         public IRepository<Login> LoginRepository { get; }
         
         public IRepository<UserFollow> UserFollowRepository { get; }
