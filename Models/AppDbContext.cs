@@ -12,6 +12,7 @@ namespace JitAPI.Models
         public DbSet<Login> Logins { get; set; }
 
         public DbSet<UserFollow> UserFollows { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     }
