@@ -31,6 +31,9 @@ namespace JitAPI.Controllers
         public IActionResult GetUserProfile(string username)
         {
             var profile = _userProfileService.GetUserProfile(username);
+            if (profile == null) 
+                return NotFound();
+            
             return Ok(profile);
         }
 
