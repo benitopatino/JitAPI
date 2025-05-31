@@ -20,6 +20,7 @@ namespace JitAPI.Models
             JitRepository = new JitRepository(_context);
             UserRepository = new Repository<User>(_context);
             LoginRepository = new Repository<Login>(_context);
+            UserProfileRepository = new Repository<UserProfile>(_context);
             UserFollowRepository = new Repository<UserFollow>(_context);
         }
 
