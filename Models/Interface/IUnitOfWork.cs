@@ -8,6 +8,7 @@ namespace JitAPI.Models.Interface
     {
         IJitRepository JitRepository { get; }
         IRepository<User> UserRepository { get; }       
+        IRepository<UserProfile> UserProfileRepository { get; }
         IRepository<Login> LoginRepository { get; }
         IRepository<UserFollow> UserFollowRepository { get; }
         int Complete();
