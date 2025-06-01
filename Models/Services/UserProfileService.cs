@@ -3,6 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JitAPI.Models.Services;
 
+public enum UpdateAction
+{
+    Increase,
+    Decrease,
+}
+
 public class UserProfileService : IUserProfileService
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -14,6 +20,18 @@ public class UserProfileService : IUserProfileService
         _newsfeedService = newsfeedService;
     }
 
+    public void UpdateFolloweeCount(Guid userId, UpdateAction action)
+    {
+        var profile = _unitOfWork.UserProfileRepository.Get(userId);
+        profile.FolloweeCount = action == UpdateAction.Increase ? profile.FolloweeCount + 1: profile.FolloweeCount - 1;
+    }
+
+    public void UpdateFollowersCount(Guid userId, UpdateAction action)
+    {
+        var profile = _unitOfWork.UserProfileRepository.Get(userId);
+        profile.FollowerCount = action == UpdateAction.Increase ? profile.FollowerCount + 1 : profile.FollowerCount - 1;
+    }
+    
     public UserProfileDTO GetUserProfile(string username)
     {
         if(string.IsNullOrEmpty(username))
