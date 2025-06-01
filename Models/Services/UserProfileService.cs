@@ -40,7 +40,7 @@ public class UserProfileService : IUserProfileService
         var profile = _unitOfWork.UserProfileRepository.GetAll()
             .Include(p => p.User) 
             .AsNoTracking()
-            .FirstOrDefault(p => p.Username == username);
+            .FirstOrDefault(p => p.User.Username == username);
 
         if (profile == null) return null;
         
@@ -49,7 +49,7 @@ public class UserProfileService : IUserProfileService
         {
             FirstName = profile.User.FirstName,
             LastName = profile.User.LastName,
-            Username = profile.Username,
+            Username = profile.User.Username,
             Title = profile.Title,
             AvatarUrl = profile.AvatarUrl,
             Bio = profile.Bio,
