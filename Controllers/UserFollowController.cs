@@ -69,8 +69,8 @@ namespace JitAPI.Controllers
         }
 
 
-        [HttpPost("unfollow/{followeeId:guid}")]
-        public IActionResult Unfollow(Guid followeeId)
+        [HttpPost("unfollow/{followeeUsername}")]
+        public IActionResult Unfollow(string followeeUsername)
         {
             try
             {
@@ -82,13 +82,13 @@ namespace JitAPI.Controllers
                     return BadRequest();
 
                 // attempt to validate followee
-                var followee = _unitOfWork.UserRepository.Get(followeeId);
+                var followee = _unitOfWork.UserRepository.GetAll()
+                    .SingleOrDefault(f => f.Username == followeeUsername);
                 if (followee == null)
-                    return NotFound(followeeId);
-
-                // create the UserFollow
+                    return NotFound(followeeUsername);
+                
                 var follow = _unitOfWork.UserFollowRepository.GetAll()
-                    .FirstOrDefault(f => f.UserFolloweeId == followeeId && f.UserFollowerId == loggedInUserGuid);
+                    .FirstOrDefault(f => f.UserFolloweeId == followee.UserId && f.UserFollowerId == loggedInUserGuid);
 
                 if (follow == null)
                     return NotFound();
@@ -96,7 +96,7 @@ namespace JitAPI.Controllers
                 _unitOfWork.UserFollowRepository.Remove(follow);
                 
                 _profileService.UpdateFolloweeCount(loggedInUserGuid, UpdateAction.Decrease); // The logged in user will update its followee count
-                _profileService.UpdateFollowersCount(followeeId, UpdateAction.Decrease); // The user we will follow needs to update its follower count
+                _profileService.UpdateFollowersCount(followee.UserId, UpdateAction.Decrease); // The user we will follow needs to update its follower count
 
                 _unitOfWork.Complete();
                 return NoContent();
