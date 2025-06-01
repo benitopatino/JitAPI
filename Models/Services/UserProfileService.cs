@@ -1,3 +1,4 @@
+using JitAPI.Models.DTOS;
 using JitAPI.Models.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -61,4 +62,23 @@ public class UserProfileService : IUserProfileService
              NewsfeedItems = newsfeedItems.ToList()
         };
     }
+
+    public void CreateUserProfile(CreateUserProfileDTO request)
+    {
+        var profile = new UserProfile
+        {
+            UserId = request.UserId,
+            Title = request.Title,
+            AvatarUrl = request.AvatarUrl,
+            Bio = request.Bio,
+            City = request.City,
+            StateOrProvince = request.StateOrProvince,
+            Country = request.Country,
+            FollowerCount = 0,
+            FolloweeCount = 0
+        };
+
+        _unitOfWork.UserProfileRepository.Add(profile);
+    }
+
 }
