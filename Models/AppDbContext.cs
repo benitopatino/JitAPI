@@ -15,5 +15,13 @@ namespace JitAPI.Models
         public DbSet<UserProfile> UserProfiles { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<UserFollow>()
+                .HasIndex(f => new { f.UserFollowerId, f.UserFolloweeId })
+                .IsUnique();
+        }
     }
 }
