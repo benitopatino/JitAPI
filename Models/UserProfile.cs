@@ -9,10 +9,6 @@ public class UserProfile
     [ForeignKey(nameof(User))] 
     public Guid UserId { get; set; }
     
-    [Required]
-    [Column(TypeName = "varchar(250)")]
-    public string Username { get; set; }
-    
     [Column(TypeName = "varchar(250)")]
     public string Title { get; set; }
     
