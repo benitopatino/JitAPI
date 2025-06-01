@@ -4,6 +4,7 @@ using JitAPI.Auth;
 using JitAPI.Models.DTOS;
 using JitAPI.Models.Follows;
 using JitAPI.Models.Interface;
+using JitAPI.Models.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +19,12 @@ namespace JitAPI.Controllers
     public class UserFollowController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserProfileService _profileService;
 
-        public UserFollowController(IUnitOfWork unitOfWork)
+        public UserFollowController(IUnitOfWork unitOfWork, IUserProfileService profileService)
         {
             _unitOfWork = unitOfWork;
+            _profileService = profileService;
         }
 
         [HttpPost("follow/{followeeId:guid}")]
@@ -46,7 +49,12 @@ namespace JitAPI.Controllers
                 userFollow.UserFollowerId = userIdGuid;
                 userFollow.UserFolloweeId = followeeId;
                 _unitOfWork.UserFollowRepository.Add(userFollow);
-
+                
+               
+                _profileService.UpdateFolloweeCount(userIdGuid, UpdateAction.Increase); // The logged in user will update its followee count
+                _profileService.UpdateFollowersCount(followeeId, UpdateAction.Increase); // The user we will follow needs to update its follower count
+                
+                
                 _unitOfWork.Complete();
                 return CreatedAtAction(nameof(Follow), new { id = userFollow.Id }, userFollow);
                 
@@ -85,6 +93,10 @@ namespace JitAPI.Controllers
                     return NotFound();
                 
                 _unitOfWork.UserFollowRepository.Remove(follow);
+                
+                _profileService.UpdateFolloweeCount(loggedInUserGuid, UpdateAction.Decrease); // The logged in user will update its followee count
+                _profileService.UpdateFollowersCount(followeeId, UpdateAction.Decrease); // The user we will follow needs to update its follower count
+
                 _unitOfWork.Complete();
                 return NoContent();
             }
