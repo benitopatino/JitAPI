@@ -27,8 +27,8 @@ namespace JitAPI.Controllers
             _profileService = profileService;
         }
 
-        [HttpPost("follow/{followeeId:guid}")]
-        public IActionResult Follow(Guid followeeId)
+        [HttpPost("follow/{followeeUsername}")]
+        public IActionResult Follow(string followeeUsername)
         {
             try
             {
@@ -40,19 +40,20 @@ namespace JitAPI.Controllers
                     return BadRequest();
 
                 // attempt to validate followee
-                var followee = _unitOfWork.UserRepository.Get(followeeId);
+                var followee = _unitOfWork.UserRepository.GetAll()
+                    .SingleOrDefault(f => f.Username == followeeUsername);
                 if (followee == null)
-                    return NotFound(followeeId);
+                    return NotFound(followeeUsername);
 
                     // create the UserFollow
                 UserFollow userFollow = new UserFollow();
                 userFollow.UserFollowerId = userIdGuid;
-                userFollow.UserFolloweeId = followeeId;
+                userFollow.UserFolloweeId = followee.UserId;
                 _unitOfWork.UserFollowRepository.Add(userFollow);
                 
                
                 _profileService.UpdateFolloweeCount(userIdGuid, UpdateAction.Increase); // The logged in user will update its followee count
-                _profileService.UpdateFollowersCount(followeeId, UpdateAction.Increase); // The user we will follow needs to update its follower count
+                _profileService.UpdateFollowersCount(followee.UserId, UpdateAction.Increase); // The user we will follow needs to update its follower count
                 
                 
                 _unitOfWork.Complete();
