@@ -24,6 +24,7 @@ namespace JitAPI
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<INewsfeedService, NewsfeedService>();
             builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+            builder.Services.AddScoped<UserRegistrationService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
 
