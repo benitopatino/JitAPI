@@ -1,6 +1,9 @@
-﻿using JitAPI.Auth;
+﻿using AutoMapper;
+using JitAPI.Auth;
 using JitAPI.Models;
 using JitAPI.Models.Auth;
+using JitAPI.Models.DTOS;
+using JitAPI.Models.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,23 +15,20 @@ namespace JitAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly UserRegistrationService _registrationService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, UserRegistrationService registrationService)
         {
             _authService = authService;
+            _registrationService = registrationService;
         }
 
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] AuthRegister register)
+        public IActionResult Register([FromBody] RegisterUserDTO register)
         {
-            User user = new User();
-            user.Email = register.Email;
-            user.FirstName = register.FirstName;
-            user.LastName = register.LastName;
-            user.Username = register.Username;
-
-            bool created = _authService.Register(user, register.Password);
+            
+            bool created = _registrationService.RegisterUser(register);
             if (created)
                 return Ok(new { message = "User registered successfully" });
             
