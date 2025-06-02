@@ -68,9 +68,7 @@ public class UserProfileService : IUserProfileService
         var profile = new UserProfile
         {
             UserId = request.UserId,
-            Title = request.Title,
-            AvatarUrl = request.AvatarUrl,
-            Bio = request.Bio,
+            AvatarUrl = $"https://randomuser.me/api/portraits/men/{new Random().Next(1,51)}.jpg",
             City = request.City,
             StateOrProvince = request.StateOrProvince,
             Country = request.Country,
