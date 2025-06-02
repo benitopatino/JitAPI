@@ -76,8 +76,8 @@ namespace JitAPI.Auth
 
 
             // create user
-            var newUser = new User(user);
-            _unitOfWork.UserRepository.Add(newUser);
+            // var newUser = new User(user);
+            _unitOfWork.UserRepository.Add(user);
 
             // create login 
 
@@ -86,17 +86,13 @@ namespace JitAPI.Auth
                 LoginId = Guid.NewGuid(),
                 LastLogin = DateTime.Now,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword),
-                User = newUser,
-                UserId = newUser.UserId
+                User = user,
+                UserId = user.UserId
             };
 
             _unitOfWork.LoginRepository.Add(newLogin);
 
-            return _unitOfWork.Complete() > 1;
-
-
-
-
+            return true;
         }
 
         public AuthResult Authenticate(string email, string password)
