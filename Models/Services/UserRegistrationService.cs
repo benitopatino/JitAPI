@@ -39,6 +39,6 @@ public class UserRegistrationService
             Country = dto.Country
         });
 
-        return _unitOfWork.Complete() > 3;
+        return _unitOfWork.Complete() > 0;
     }
 }
