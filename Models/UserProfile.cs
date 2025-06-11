@@ -10,22 +10,22 @@ public class UserProfile
     public Guid UserId { get; set; }
     
     [Column(TypeName = "varchar(250)")]
-    public string Title { get; set; }
+    public string? Title { get; set; }
     
     [Column(TypeName = "varchar(500)")]
-    public string AvatarUrl { get; set; }
+    public string? AvatarUrl { get; set; }
     
     [Column(TypeName = "text")]
-    public string Bio { get; set; }
+    public string? Bio { get; set; }
     
     [Column(TypeName = "varchar(250)")]
-    public string City { get; set; }
+    public string? City { get; set; }
     
     [Column(TypeName = "varchar(250)")]
-    public string StateOrProvince { get; set; }
+    public string? StateOrProvince { get; set; }
     
     [Column(TypeName = "varchar(250)")]
-    public string Country { get; set; }
+    public string? Country { get; set; }
     
     public int FollowerCount { get; set; }
     public int FolloweeCount { get; set; }
