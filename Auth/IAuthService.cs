@@ -71,7 +71,7 @@ namespace JitAPI.Auth
 
         public bool Register(User user, string newPassword)
         {
-            if (_unitOfWork.UserRepository.GetAll().Any(c => c.Email == user.Email))
+            if (_unitOfWork.UserRepository.GetAll().Any(c => c.Email == user.Email || c.Username == user.Username))
                 return false;
 
 
@@ -94,7 +94,6 @@ namespace JitAPI.Auth
 
             return true;
         }
-
         public AuthResult Authenticate(string email, string password)
         {
 
