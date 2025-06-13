@@ -32,7 +32,7 @@ namespace JitAPI.Controllers
             if (created)
                 return Ok(new { message = "User registered successfully" });
             
-            return BadRequest(new { message = "Unable to register user" });
+            return Conflict(new { message = "Unable to register user" });
         }
 
         [HttpPost("login")]
