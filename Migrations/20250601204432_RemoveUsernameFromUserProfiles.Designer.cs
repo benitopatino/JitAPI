@@ -4,6 +4,7 @@ using JitAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JitAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250601204432_RemoveUsernameFromUserProfiles")]
+    partial class RemoveUsernameFromUserProfiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,15 +135,19 @@ namespace JitAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AvatarUrl")
+                        .IsRequired()
                         .HasColumnType("varchar(500)");
 
                     b.Property<string>("Bio")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("varchar(250)");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("varchar(250)");
 
                     b.Property<int>("FolloweeCount")
@@ -150,9 +157,11 @@ namespace JitAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("StateOrProvince")
+                        .IsRequired()
                         .HasColumnType("varchar(250)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("varchar(250)");
 
                     b.HasKey("UserId");

@@ -9,6 +9,7 @@ namespace JitAPI.Models
         private readonly AppDbContext _context;
         public IJitRepository JitRepository { get; }
         public IRepository<User> UserRepository { get; }
+        public IRepository<UserProfile> UserProfileRepository { get;}
         public IRepository<Login> LoginRepository { get; }
         
         public IRepository<UserFollow> UserFollowRepository { get; }
@@ -19,6 +20,7 @@ namespace JitAPI.Models
             JitRepository = new JitRepository(_context);
             UserRepository = new Repository<User>(_context);
             LoginRepository = new Repository<Login>(_context);
+            UserProfileRepository = new Repository<UserProfile>(_context);
             UserFollowRepository = new Repository<UserFollow>(_context);
         }
 

@@ -4,6 +4,7 @@ using JitAPI.Auth;
 using JitAPI.Models.DTOS;
 using JitAPI.Models.Follows;
 using JitAPI.Models.Interface;
+using JitAPI.Models.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +19,16 @@ namespace JitAPI.Controllers
     public class UserFollowController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserProfileService _profileService;
 
-        public UserFollowController(IUnitOfWork unitOfWork)
+        public UserFollowController(IUnitOfWork unitOfWork, IUserProfileService profileService)
         {
             _unitOfWork = unitOfWork;
+            _profileService = profileService;
         }
 
-        [HttpPost("follow/{followeeId:guid}")]
-        public IActionResult Follow(Guid followeeId)
+        [HttpPost("follow/{followeeUsername}")]
+        public IActionResult Follow(string followeeUsername)
         {
             try
             {
@@ -37,16 +40,22 @@ namespace JitAPI.Controllers
                     return BadRequest();
 
                 // attempt to validate followee
-                var followee = _unitOfWork.UserRepository.Get(followeeId);
+                var followee = _unitOfWork.UserRepository.GetAll()
+                    .SingleOrDefault(f => f.Username == followeeUsername);
                 if (followee == null)
-                    return NotFound(followeeId);
+                    return NotFound(followeeUsername);
 
                     // create the UserFollow
                 UserFollow userFollow = new UserFollow();
                 userFollow.UserFollowerId = userIdGuid;
-                userFollow.UserFolloweeId = followeeId;
+                userFollow.UserFolloweeId = followee.UserId;
                 _unitOfWork.UserFollowRepository.Add(userFollow);
-
+                
+               
+                _profileService.UpdateFolloweeCount(userIdGuid, UpdateAction.Increase); // The logged in user will update its followee count
+                _profileService.UpdateFollowersCount(followee.UserId, UpdateAction.Increase); // The user we will follow needs to update its follower count
+                
+                
                 _unitOfWork.Complete();
                 return CreatedAtAction(nameof(Follow), new { id = userFollow.Id }, userFollow);
                 
@@ -60,8 +69,8 @@ namespace JitAPI.Controllers
         }
 
 
-        [HttpPost("unfollow/{followeeId:guid}")]
-        public IActionResult Unfollow(Guid followeeId)
+        [HttpPost("unfollow/{followeeUsername}")]
+        public IActionResult Unfollow(string followeeUsername)
         {
             try
             {
@@ -73,18 +82,22 @@ namespace JitAPI.Controllers
                     return BadRequest();
 
                 // attempt to validate followee
-                var followee = _unitOfWork.UserRepository.Get(followeeId);
+                var followee = _unitOfWork.UserRepository.GetAll()
+                    .SingleOrDefault(f => f.Username == followeeUsername);
                 if (followee == null)
-                    return NotFound(followeeId);
-
-                // create the UserFollow
+                    return NotFound(followeeUsername);
+                
                 var follow = _unitOfWork.UserFollowRepository.GetAll()
-                    .FirstOrDefault(f => f.UserFolloweeId == followeeId && f.UserFollowerId == loggedInUserGuid);
+                    .FirstOrDefault(f => f.UserFolloweeId == followee.UserId && f.UserFollowerId == loggedInUserGuid);
 
                 if (follow == null)
                     return NotFound();
                 
                 _unitOfWork.UserFollowRepository.Remove(follow);
+                
+                _profileService.UpdateFolloweeCount(loggedInUserGuid, UpdateAction.Decrease); // The logged in user will update its followee count
+                _profileService.UpdateFollowersCount(followee.UserId, UpdateAction.Decrease); // The user we will follow needs to update its follower count
+
                 _unitOfWork.Complete();
                 return NoContent();
             }
