@@ -44,23 +44,23 @@ public class UserProfileService : IUserProfileService
             .FirstOrDefault(p => p.User.Username == username);
 
         if (profile == null) return null;
+
+        return BuildUserProfileDto(profile);
+    }
+
+    public UserProfileDTO GetUserProfile(Guid userId)
+    {
+        if(userId == Guid.Empty)
+            throw new ArgumentNullException(nameof(userId));
+
+        var profile = _unitOfWork.UserProfileRepository.GetAll()
+            .Include(p => p.User) 
+            .AsNoTracking()
+            .FirstOrDefault(p => p.User.UserId == userId);
+
+        if (profile == null) return null;
         
-        var newsfeedItems = _newsfeedService.GetNewsfeed(profile.UserId, true);
-        return new UserProfileDTO
-        {
-            FirstName = profile.User.FirstName,
-            LastName = profile.User.LastName,
-            Username = profile.User.Username,
-            Title = profile.Title,
-            AvatarUrl = profile.AvatarUrl,
-            Bio = profile.Bio,
-            City = profile.City,
-            StateOrProvince = profile.StateOrProvince,
-            Country = profile.Country,
-            FollowerCount = profile.FollowerCount,
-            FolloweeCount = profile.FolloweeCount,
-             NewsfeedItems = newsfeedItems.ToList()
-        };
+        return  BuildUserProfileDto(profile);
     }
 
     public void CreateUserProfile(CreateUserProfileDTO request)
@@ -78,5 +78,26 @@ public class UserProfileService : IUserProfileService
 
         _unitOfWork.UserProfileRepository.Add(profile);
     }
+
+    private UserProfileDTO BuildUserProfileDto(UserProfile profile)
+    {
+        var newsfeedItems = _newsfeedService.GetNewsfeed(profile.UserId, true);
+        return new UserProfileDTO
+        {
+            FirstName = profile.User.FirstName,
+            LastName = profile.User.LastName,
+            Username = profile.User.Username,
+            Title = profile.Title,
+            AvatarUrl = profile.AvatarUrl,
+            Bio = profile.Bio,
+            City = profile.City,
+            StateOrProvince = profile.StateOrProvince,
+            Country = profile.Country,
+            FollowerCount = profile.FollowerCount,
+            FolloweeCount = profile.FolloweeCount,
+            NewsfeedItems = newsfeedItems.ToList()
+        };
+    }
+    
 
 }

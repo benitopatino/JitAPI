@@ -37,6 +37,17 @@ namespace JitAPI.Controllers
             return Ok(profile);
         }
 
+        [HttpGet("profile/")]
+        public IActionResult GetUserProfile()
+        {
+            string? userId = HttpContext.GetUserId();
+            Guid.TryParse(userId, out Guid guidUserId);
+            var profile = _userProfileService.GetUserProfile(guidUserId);
+            if(profile == null)
+                return NotFound();
+            return Ok(profile);
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
