@@ -121,6 +121,7 @@ namespace JitAPI.Auth
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("username", user.Username),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email)
             };
 
