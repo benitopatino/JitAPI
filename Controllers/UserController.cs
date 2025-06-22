@@ -48,6 +48,18 @@ namespace JitAPI.Controllers
             return Ok(profile);
         }
 
+        [HttpPost("profile")]
+        public IActionResult UpdateUserProfile([FromBody] UserProfileUpdateDTO profileUpdate)
+        {
+            string? userId = HttpContext.GetUserId();
+            Guid.TryParse(userId, out Guid guidUserId);
+            var profileEntity = _userProfileService.GetUserProfile(guidUserId);
+            if(profileEntity == null)
+                return NotFound();
+            bool success = _userProfileService.UpdateUserProfile(profileUpdate, guidUserId);
+            return success ? Ok() : Conflict();
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
