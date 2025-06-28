@@ -94,7 +94,8 @@ public class UserProfileService : IUserProfileService
         existingProfile.City = profile.City;
         existingProfile.Country = profile.Country;
         existingProfile.StateOrProvince = profile.StateOrProvince;
-        return _unitOfWork.Complete() > 0;
+        _unitOfWork.Complete();
+        return true;
     }
     
     
