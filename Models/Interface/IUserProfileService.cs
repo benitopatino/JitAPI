@@ -10,4 +10,5 @@ public interface IUserProfileService
     void UpdateFollowersCount(Guid userId, UpdateAction action);
     void UpdateFolloweeCount(Guid userId, UpdateAction action);
     void CreateUserProfile(CreateUserProfileDTO newUserProfile);
+    bool UpdateUserProfile(UserProfileUpdateDTO profile, Guid userId);
 }

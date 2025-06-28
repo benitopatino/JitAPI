@@ -24,7 +24,7 @@ public class UserProfileService : IUserProfileService
     public void UpdateFolloweeCount(Guid userId, UpdateAction action)
     {
         var profile = _unitOfWork.UserProfileRepository.Get(userId);
-        profile.FolloweeCount = action == UpdateAction.Increase ? profile.FolloweeCount + 1: profile.FolloweeCount - 1;
+        profile.FolloweeCount = action == UpdateAction.Increase ? profile.FolloweeCount + 1 : profile.FolloweeCount - 1;
     }
 
     public void UpdateFollowersCount(Guid userId, UpdateAction action)
@@ -32,14 +32,14 @@ public class UserProfileService : IUserProfileService
         var profile = _unitOfWork.UserProfileRepository.Get(userId);
         profile.FollowerCount = action == UpdateAction.Increase ? profile.FollowerCount + 1 : profile.FollowerCount - 1;
     }
-    
+
     public UserProfileDTO GetUserProfile(string username)
     {
-        if(string.IsNullOrEmpty(username))
+        if (string.IsNullOrEmpty(username))
             throw new ArgumentNullException(nameof(username));
 
         var profile = _unitOfWork.UserProfileRepository.GetAll()
-            .Include(p => p.User) 
+            .Include(p => p.User)
             .AsNoTracking()
             .FirstOrDefault(p => p.User.Username == username);
 
@@ -50,17 +50,17 @@ public class UserProfileService : IUserProfileService
 
     public UserProfileDTO GetUserProfile(Guid userId)
     {
-        if(userId == Guid.Empty)
+        if (userId == Guid.Empty)
             throw new ArgumentNullException(nameof(userId));
 
         var profile = _unitOfWork.UserProfileRepository.GetAll()
-            .Include(p => p.User) 
+            .Include(p => p.User)
             .AsNoTracking()
             .FirstOrDefault(p => p.User.UserId == userId);
 
         if (profile == null) return null;
-        
-        return  BuildUserProfileDto(profile);
+
+        return BuildUserProfileDto(profile);
     }
 
     public void CreateUserProfile(CreateUserProfileDTO request)
@@ -68,7 +68,7 @@ public class UserProfileService : IUserProfileService
         var profile = new UserProfile
         {
             UserId = request.UserId,
-            AvatarUrl = $"https://randomuser.me/api/portraits/men/{new Random().Next(1,51)}.jpg",
+            AvatarUrl = $"https://randomuser.me/api/portraits/men/{new Random().Next(1, 51)}.jpg",
             City = request.City,
             StateOrProvince = request.StateOrProvince,
             Country = request.Country,
@@ -78,6 +78,27 @@ public class UserProfileService : IUserProfileService
 
         _unitOfWork.UserProfileRepository.Add(profile);
     }
+
+
+    public bool UpdateUserProfile(UserProfileUpdateDTO profile, Guid userId)
+    {
+        var existingProfile = _unitOfWork.UserProfileRepository.GetAll()
+            .Include(p => p.User)
+            .FirstOrDefault(p => p.User.UserId == userId);
+        if (profile == null) return false;
+
+    existingProfile.User.FirstName = profile.FirstName;
+        existingProfile.User.LastName = profile.LastName;
+        existingProfile.Title = profile.Title;
+        existingProfile.Bio = profile.Bio;
+        existingProfile.City = profile.City;
+        existingProfile.Country = profile.Country;
+        existingProfile.StateOrProvince = profile.StateOrProvince;
+        _unitOfWork.Complete();
+        return true;
+    }
+    
+    
 
     private UserProfileDTO BuildUserProfileDto(UserProfile profile)
     {
