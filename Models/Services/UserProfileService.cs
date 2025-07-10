@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using JitAPI.Models.DTOS;
 using JitAPI.Models.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +80,14 @@ public class UserProfileService : IUserProfileService
         _unitOfWork.UserProfileRepository.Add(profile);
     }
 
+    public IEnumerable<string> GetFollowees(Guid userId)
+    {
+        return _unitOfWork.UserFollowRepository.GetAll()
+            .Include(u => u.UserFollowee)
+            .Where(f => f.UserFollowerId == userId)
+            .Select(u => u.UserFollowee.Username)
+            .ToList();
+    }
 
     public bool UpdateUserProfile(UserProfileUpdateDTO profile, Guid userId)
     {

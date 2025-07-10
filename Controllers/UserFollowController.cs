@@ -27,6 +27,17 @@ namespace JitAPI.Controllers
             _profileService = profileService;
         }
 
+        [HttpGet("following")]
+        public IActionResult GetFollowing()
+        {
+            string? userId = HttpContext.GetUserId();
+                
+            if(!Guid.TryParse(userId, out Guid userIdGuid) || !_unitOfWork.UserRepository.Exists(userIdGuid))
+                return BadRequest();
+
+            return Ok(_profileService.GetFollowees(userIdGuid));
+        }
+
         [HttpPost("follow/{followeeUsername}")]
         public IActionResult Follow(string followeeUsername)
         {
