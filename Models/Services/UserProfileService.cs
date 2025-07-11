@@ -75,8 +75,7 @@ public class UserProfileService : IUserProfileService
             .Where(r =>
                 EF.Functions.Like(r.User.FirstName, $"%{searchQuery}%") ||
                 EF.Functions.Like(r.User.LastName, $"%{searchQuery}%") ||
-                EF.Functions.Like(r.User.Username, $"%{searchQuery}%") || 
-                EF.Functions.Like(r.User.Username, $"%{searchQuery}%"))  
+                EF.Functions.Like(r.User.Username, $"%{searchQuery}%"))
             .ToList();
         
         return results.Select(r => BuildUserProfileDto(r));
