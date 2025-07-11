@@ -64,6 +64,25 @@ public class UserProfileService : IUserProfileService
         return BuildUserProfileDto(profile);
     }
 
+    public IEnumerable<UserProfileDTO> SearchUserProfiles(string searchQuery)
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery)) return new List<UserProfileDTO>();
+        searchQuery = searchQuery.Trim();
+        searchQuery = searchQuery.ToLower();
+        
+        var results = _unitOfWork.UserProfileRepository.GetAll()
+            .Include(p => p.User)
+            .Where(r =>
+                EF.Functions.Like(r.User.FirstName, $"%{searchQuery}%") ||
+                EF.Functions.Like(r.User.LastName, $"%{searchQuery}%") ||
+                EF.Functions.Like(r.User.Username, $"%{searchQuery}%") || 
+                EF.Functions.Like(r.User.Username, $"%{searchQuery}%"))  
+            .ToList();
+        
+        return results.Select(r => BuildUserProfileDto(r));
+        
+    }
+
     public void CreateUserProfile(CreateUserProfileDTO request)
     {
         var profile = new UserProfile
