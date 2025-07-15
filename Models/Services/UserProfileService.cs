@@ -64,21 +64,33 @@ public class UserProfileService : IUserProfileService
         return BuildUserProfileDto(profile);
     }
 
-    public IEnumerable<UserProfileDTO> SearchUserProfiles(string searchQuery)
+    public IEnumerable<UserProfileSearchDTO> SearchUserProfiles(string searchQuery)
     {
-        if (string.IsNullOrWhiteSpace(searchQuery)) return new List<UserProfileDTO>();
+        List<UserProfileSearchDTO> searchResults = new List<UserProfileSearchDTO>();
+        if (string.IsNullOrWhiteSpace(searchQuery)) return searchResults;
         searchQuery = searchQuery.Trim();
         searchQuery = searchQuery.ToLower();
         
-        var results = _unitOfWork.UserProfileRepository.GetAll()
+        var fullProfiles = _unitOfWork.UserProfileRepository.GetAll()
             .Include(p => p.User)
             .Where(r =>
                 EF.Functions.Like(r.User.FirstName, $"%{searchQuery}%") ||
                 EF.Functions.Like(r.User.LastName, $"%{searchQuery}%") ||
                 EF.Functions.Like(r.User.Username, $"%{searchQuery}%"))
             .ToList();
-        
-        return results.Select(r => BuildUserProfileDto(r));
+
+        foreach (var p in fullProfiles)
+        {
+            searchResults.Add(new UserProfileSearchDTO()
+            {
+                FirstName = p.User.FirstName, 
+                LastName = p.User.LastName, 
+                Username = p.User.Username,
+                AvatarUrl = p.AvatarUrl
+                
+            });
+        }
+        return searchResults;
         
     }
 
@@ -146,6 +158,4 @@ public class UserProfileService : IUserProfileService
             NewsfeedItems = newsfeedItems.ToList()
         };
     }
-    
-
 }

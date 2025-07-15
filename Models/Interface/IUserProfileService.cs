@@ -6,7 +6,7 @@ namespace JitAPI.Models.Interface;
 public interface IUserProfileService
 {
     UserProfileDTO GetUserProfile(string username);
-    IEnumerable<UserProfileDTO> SearchUserProfiles(string searchQuery);
+    IEnumerable<UserProfileSearchDTO> SearchUserProfiles(string searchQuery);
     UserProfileDTO GetUserProfile(Guid userId);
     /// <summary>
     /// Return a collection of usernames belonging to followees.
