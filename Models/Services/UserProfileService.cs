@@ -64,6 +64,36 @@ public class UserProfileService : IUserProfileService
         return BuildUserProfileDto(profile);
     }
 
+    public IEnumerable<UserProfileSearchDTO> SearchUserProfiles(string searchQuery)
+    {
+        List<UserProfileSearchDTO> searchResults = new List<UserProfileSearchDTO>();
+        if (string.IsNullOrWhiteSpace(searchQuery)) return searchResults;
+        searchQuery = searchQuery.Trim();
+        searchQuery = searchQuery.ToLower();
+        
+        var fullProfiles = _unitOfWork.UserProfileRepository.GetAll()
+            .Include(p => p.User)
+            .Where(r =>
+                EF.Functions.Like(r.User.FirstName, $"%{searchQuery}%") ||
+                EF.Functions.Like(r.User.LastName, $"%{searchQuery}%") ||
+                EF.Functions.Like(r.User.Username, $"%{searchQuery}%"))
+            .ToList();
+
+        foreach (var p in fullProfiles)
+        {
+            searchResults.Add(new UserProfileSearchDTO()
+            {
+                FirstName = p.User.FirstName, 
+                LastName = p.User.LastName, 
+                Username = p.User.Username,
+                AvatarUrl = p.AvatarUrl
+                
+            });
+        }
+        return searchResults;
+        
+    }
+
     public void CreateUserProfile(CreateUserProfileDTO request)
     {
         var profile = new UserProfile
@@ -128,6 +158,4 @@ public class UserProfileService : IUserProfileService
             NewsfeedItems = newsfeedItems.ToList()
         };
     }
-    
-
 }

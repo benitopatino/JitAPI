@@ -27,6 +27,15 @@ namespace JitAPI.Controllers
             _userProfileService = userProfileService;
         }
 
+        [HttpGet("search")]
+        public IActionResult Search([FromQuery] string searchQuery)
+        {
+            if (string.IsNullOrWhiteSpace(searchQuery)) return BadRequest("Empty search term.");
+
+            var results = _userProfileService.SearchUserProfiles(searchQuery);
+            return Ok(results);
+        }
+
         [HttpGet("profile/{username}")]
         public IActionResult GetUserProfile(string username)
         {
