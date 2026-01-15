@@ -135,39 +135,5 @@ namespace JitAPI.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
-        {
-            try
-            {
-                var user = _unitOfWork.UserRepository.Get(id);
-                if (user == null) return NotFound();
-
-                // delete all associagted jits
-
-                var jits = _unitOfWork.JitRepository.GetAll()
-                    .Where(j => j.UserId == user.UserId)
-                    .ToList();
-
-                if (jits.Any())
-                {
-                    foreach (var j in jits)
-                        _unitOfWork.JitRepository.Remove(j);
-
-                    _unitOfWork.Complete();
-                }
-                
- 
-                _unitOfWork.UserRepository.Remove(user);
-                _unitOfWork.Complete();
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
     }
 }
