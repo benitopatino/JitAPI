@@ -27,12 +27,12 @@ public class NewsfeedService : INewsfeedService
                 .Include(j => j.User)
                 .ToList();
             
-            newsfeedItems.AddRange(BuildNewsfeed(userJits));
+            newsfeedItems.AddRange(BuildNewsfeed(userJits, userId));
         }
         else // Get newsfeed items of followees
         {
             // Get follows
-        
+
             var followeeIds = _unitOfWork.UserFollowRepository.GetAll()
                 .Where(f => f.UserFollowerId == userId && f.UserFolloweeId != null)
                 .Select(f => f.UserFolloweeId.Value)
@@ -44,19 +44,20 @@ public class NewsfeedService : INewsfeedService
                 var userJits = _unitOfWork.JitRepository.GetJitsByUserId(id)
                     .Include(j => j.User)
                     .ToList();
-                newsfeedItems.AddRange(BuildNewsfeed(userJits));
+                newsfeedItems.AddRange(BuildNewsfeed(userJits, id));
             }
         }
         return newsfeedItems;
     }
 
-    private IEnumerable<NewsfeedItemDTO> BuildNewsfeed(List<Jit> jits)
+    private IEnumerable<NewsfeedItemDTO> BuildNewsfeed(List<Jit> jits, Guid userId)
     {
         List<NewsfeedItemDTO> newsFeed = new List<NewsfeedItemDTO>();
+        UserProfile profile = _unitOfWork.UserProfileRepository.Get(userId);
         foreach (var j in jits)
         {
             newsFeed.Add(new NewsfeedItemDTO(j.Id, j.Content, j.DateCreated, j.UserId, j.User.FirstName + " " +
-            j.User.LastName));
+            j.User.LastName, profile.AvatarUrl));
         }
 
         return newsFeed;
