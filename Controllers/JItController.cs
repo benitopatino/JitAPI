@@ -23,21 +23,6 @@ namespace JitAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            try
-            {
-                var jits = _unitOfWork.JitRepository.GetAll()
-                    .Include(j => j.User);
-                return Ok(_mapper.Map<IEnumerable<JitGetDTO>>(jits));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
