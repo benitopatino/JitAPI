@@ -69,35 +69,5 @@ namespace JitAPI.Controllers
             return success ? Ok() : Conflict();
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            try
-            {
-                var users = _unitOfWork.UserRepository.GetAll();
-
-                return Ok(_mapper.Map<IEnumerable<UserGetDTO>>(users));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
-        {
-            try
-            {
-                var user = _unitOfWork.UserRepository.Get(id);
-                if (user == null) return NotFound();
-                return Ok(_mapper.Map<UserGetDTO>(user));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
     }
 }
