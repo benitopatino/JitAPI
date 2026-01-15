@@ -99,41 +99,5 @@ namespace JitAPI.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult Create([FromBody] UserPostDTO dto)
-        {
-            try
-            {
-                var user = _mapper.Map<User>(dto);
-                _unitOfWork.UserRepository.Add(user);
-                _unitOfWork.Complete();
-                // Fetch the newly created Jit with User relationship
-                var createdUser = _unitOfWork.UserRepository.Get(user.UserId);
-
-                return CreatedAtAction(nameof(Get), new { id = createdUser.UserId }, _mapper.Map<UserGetDTO>(createdUser));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpPut]
-        public IActionResult Update([FromBody] UserPutDTO dto)
-        {
-            try
-            {
-                var user = _unitOfWork.UserRepository.Get(dto.UserId);
-                if (user == null) return NotFound();
-                _mapper.Map(dto, user);
-                _unitOfWork.Complete();
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
     }
 }
