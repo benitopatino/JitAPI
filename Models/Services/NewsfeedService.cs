@@ -57,7 +57,7 @@ public class NewsfeedService : INewsfeedService
         foreach (var j in jits)
         {
             newsFeed.Add(new NewsfeedItemDTO(j.Id, j.Content, j.DateCreated, j.UserId, j.User.FirstName + " " +
-            j.User.LastName, profile.AvatarUrl));
+            j.User.LastName, profile.AvatarUrl, j.User.Username));
         }
 
         return newsFeed;
