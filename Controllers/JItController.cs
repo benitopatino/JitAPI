@@ -40,25 +40,6 @@ namespace JitAPI.Controllers
             }
         }
 
-
-        [HttpGet("user/{userId}")]
-        public IActionResult GetJitsByUserId(Guid userId)
-        {
-            try
-            {
-                var jits = _unitOfWork.JitRepository
-                    .GetJitsByUserId(userId)
-                    .Include(j => j.User);
-
-                return Ok(_mapper.Map<IEnumerable<JitGetDTO>>(jits));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
         [HttpPost]
         public IActionResult Create([FromBody] JitPostDTO dto)
         {
@@ -104,7 +85,6 @@ namespace JitAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
 
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
